@@ -30,12 +30,12 @@ const toolSchema = new mongoose.Schema({
     }),
     default: undefined,
   },
-  place: {
+  project: {
     type: new mongoose.Schema({
       name: {
         type: String,
-        minlength: 50,
-        maxlength: 100,
+        minlength: 5,
+        maxlength: 50,
         required: true,
       },
       address: {
