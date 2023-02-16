@@ -1,3 +1,4 @@
+const { config } = require('winston');
 const winston = require('winston');
 require('winston-mongodb');
 require('express-async-errors');
@@ -15,13 +16,12 @@ module.exports = function () {
   winston.add(new winston.transports.File({ filename: 'logfile.log' }));
 
   //mongoDB logger
-  // winston.add(
-  //     new winston.transports.MongoDB({
-  //         db: connection string,
-  //         level:'error'
-
-  //     })
-  // )
+  winston.add(
+    new winston.transports.MongoDB({
+      db: 'mongodb://localhost:27017/toolmaster',
+      level: 'error',
+    })
+  );
 
   //console logger
   winston.add(
