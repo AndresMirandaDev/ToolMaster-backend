@@ -4,6 +4,7 @@ const winston = require('winston');
 const app = express();
 
 require('./startup/logging')();
+require('./startup/validation')();
 
 const port = process.env.PORT || 3000;
 
