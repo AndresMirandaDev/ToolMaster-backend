@@ -1,4 +1,5 @@
 const express = require('express');
+const home = require('../routes/home');
 const tools = require('../routes/tools');
 const users = require('../routes/users');
 const auth = require('../routes/auth');
@@ -7,6 +8,7 @@ const error = require('../middleware/error');
 
 module.exports = function (app) {
   app.use(express.json());
+  app.use('/', home);
   app.use('/api/tools', tools);
   app.use('/api/users', users);
   app.use('/api/auth', auth);

@@ -16,12 +16,13 @@ module.exports = function () {
   winston.add(new winston.transports.File({ filename: 'logfile.log' }));
 
   //mongoDB logger
-  winston.add(
-    new winston.transports.MongoDB({
-      db: 'mongodb://localhost:27017/toolmaster',
-      level: 'error',
-    })
-  );
+  // const db = config.get('db');
+  // winston.add(
+  //   new winston.transports.MongoDB({
+  //     db: 'localhost:3000/toolmaster',
+  //     level: 'error',
+  //   })
+  // );
 
   //console logger
   winston.add(

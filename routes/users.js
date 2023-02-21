@@ -5,6 +5,8 @@ const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
 const { User, validate } = require('../models/user');
+const admin = require('../middleware/admin');
+const { length } = require('joi/lib/types/binary');
 
 router.get('/me', authorize, async (req, res) => {
   const user = await User.findById(req.user._id).select('-password');
@@ -34,4 +36,32 @@ router.post('/', async (req, res) => {
     .send(_.pick(user, ['name', 'email', '_id']));
 });
 
+router.put('/:id', [authorize], async (req, res) => {
+  const result = validate(req.body);
+  if (result.error)
+    return res.status(400).send(result.error.details[0].message);
+
+  let { name, email, password } = req.body;
+
+  let user = await User.findById(req.params.id);
+  if (!user)
+    return res.status(404).send('User with the given id was not found.');
+
+  const salt = await bcrypt.genSalt(10);
+  password = await bcrypt.hash(password, salt);
+
+  user.name = name;
+  (user.password = password), (user.email = email), await user.save();
+
+  res.send(user);
+});
+
+router.delete('/:id', [authorize, admin], async (req, res) => {
+  const user = await User.findByIdAndRemove(req.params.id);
+
+  if (!user)
+    return res.status(404).send('User with the given id was not found.');
+
+  res.send(user);
+});
 module.exports = router;
