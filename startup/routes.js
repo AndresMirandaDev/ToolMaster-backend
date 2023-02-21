@@ -3,6 +3,7 @@ const home = require('../routes/home');
 const tools = require('../routes/tools');
 const users = require('../routes/users');
 const auth = require('../routes/auth');
+const projects = require('../routes/projects');
 const morgan = require('morgan');
 const error = require('../middleware/error');
 
@@ -12,6 +13,7 @@ module.exports = function (app) {
   app.use('/api/tools', tools);
   app.use('/api/users', users);
   app.use('/api/auth', auth);
+  app.use('/api/projects', projects);
 
   app.use(morgan('dev'));
 

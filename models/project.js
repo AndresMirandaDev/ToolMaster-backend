@@ -23,17 +23,8 @@ const projectSchema = new mongoose.Schema({
     default: false,
   },
   supervisor: {
-    type: new mongoose.Schema({
-      name: {
-        type: String,
-        minlength: 5,
-        maxlength: 50,
-      },
-      phone: {
-        type: Number,
-        required: true,
-      },
-    }),
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
   startDate: {

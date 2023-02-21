@@ -6,7 +6,6 @@ const router = express.Router();
 const _ = require('lodash');
 const { User, validate } = require('../models/user');
 const admin = require('../middleware/admin');
-const { length } = require('joi/lib/types/binary');
 
 router.get('/me', authorize, async (req, res) => {
   const user = await User.findById(req.user._id).select('-password');
@@ -23,7 +22,7 @@ router.post('/', [authorize, admin], async (req, res) => {
   if (user)
     return res.status(400).send('User with given email already exists.');
   //creating new user
-  user = new User(_.pick(req.body, ['name', 'email', 'password']));
+  user = new User(_.pick(req.body, ['name', 'email', 'password', 'phone']));
   //encrypting password
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
@@ -33,7 +32,7 @@ router.post('/', [authorize, admin], async (req, res) => {
   const token = user.generateAuthToken();
   res
     .header('x-auth-token', token)
-    .send(_.pick(user, ['name', 'email', '_id']));
+    .send(_.pick(user, ['name', 'email', '_id', 'phone']));
 });
 
 router.put('/:id', [authorize], async (req, res) => {
@@ -41,7 +40,7 @@ router.put('/:id', [authorize], async (req, res) => {
   if (result.error)
     return res.status(400).send(result.error.details[0].message);
 
-  let { name, email, password } = req.body;
+  let { name, email, password, phone } = req.body;
 
   let user = await User.findById(req.params.id);
   if (!user)
@@ -51,7 +50,10 @@ router.put('/:id', [authorize], async (req, res) => {
   password = await bcrypt.hash(password, salt);
 
   user.name = name;
-  (user.password = password), (user.email = email), await user.save();
+  (user.password = password),
+    (user.email = email),
+    (user.phone = phone),
+    await user.save();
 
   res.send(user);
 });
