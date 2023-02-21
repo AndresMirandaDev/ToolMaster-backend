@@ -13,7 +13,7 @@ router.get('/me', authorize, async (req, res) => {
   res.send(user);
 });
 
-router.post('/', async (req, res) => {
+router.post('/', [authorize, admin], async (req, res) => {
   //validate input
   const result = validate(req.body);
   if (result.error)
