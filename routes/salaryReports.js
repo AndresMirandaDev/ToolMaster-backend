@@ -5,6 +5,7 @@ const { User } = require('../models/user');
 const { Project } = require('../models/project');
 const admin = require('../middleware/admin');
 const authorize = require('../middleware/authorize');
+const validateObjectId = require('../middleware/validateObjectId');
 
 router.get('/', [authorize, admin], async (req, res) => {
   const reports = await SalaryReport.find()
@@ -15,7 +16,7 @@ router.get('/', [authorize, admin], async (req, res) => {
   res.send(reports);
 });
 
-router.get('/:id', [authorize, admin], async (req, res) => {
+router.get('/:id', [authorize, admin, validateObjectId], async (req, res) => {
   const report = await SalaryReport.findById(req.params.id)
     .populate('worker', 'name _id')
     .populate('workDays.places.project', 'name projectNumber _id address');
@@ -67,7 +68,7 @@ router.post('/', authorize, async (req, res) => {
   res.send(report);
 });
 
-router.put('/:id', [authorize, admin], async (req, res) => {
+router.put('/:id', [authorize, admin, validateObjectId], async (req, res) => {
   const result = validate(req.body);
   if (result.error)
     return res.status(400).send(result.error.details[0].message);
@@ -108,13 +109,17 @@ router.put('/:id', [authorize, admin], async (req, res) => {
   res.send(report);
 });
 
-router.delete('/:id', [authorize, admin], async (req, res) => {
-  const report = await SalaryReport.findByIdAndRemove(req.params.id);
+router.delete(
+  '/:id',
+  [authorize, admin, validateObjectId],
+  async (req, res) => {
+    const report = await SalaryReport.findByIdAndRemove(req.params.id);
 
-  if (!report)
-    return res.status(404).send('Report with the given id was not found.');
+    if (!report)
+      return res.status(404).send('Report with the given id was not found.');
 
-  res.send(report);
-});
+    res.send(report);
+  }
+);
 
 module.exports = router;

@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const authorize = require('../middleware/authorize');
 const admin = require('../middleware/admin');
 const { Tool, validate } = require('../models/tool');
+const validateObjectId = require('../middleware/validateObjectId');
 
 router.get('/', async (req, res) => {
   const tools = await Tool.find()
@@ -13,7 +14,7 @@ router.get('/', async (req, res) => {
   res.send(tools);
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', [authorize, validateObjectId], async (req, res) => {
   const tool = await Tool.findById(req.params.id)
     .populate('project', 'name address projectNumber _id')
     .populate('toolgroup', 'name description');
@@ -42,7 +43,7 @@ router.post('/', authorize, async (req, res) => {
   res.send(tool);
 });
 
-router.put('/:id', authorize, async (req, res) => {
+router.put('/:id', [authorize, validateObjectId], async (req, res) => {
   const result = validate(req.body);
 
   if (result.error)
@@ -66,13 +67,17 @@ router.put('/:id', authorize, async (req, res) => {
   res.send(tool);
 });
 
-router.delete('/:id', [authorize, admin], async (req, res) => {
-  console.log(req.params.id);
-  const tool = await Tool.findByIdAndRemove(req.params.id);
+router.delete(
+  '/:id',
+  [authorize, admin, validateObjectId],
+  async (req, res) => {
+    console.log(req.params.id);
+    const tool = await Tool.findByIdAndRemove(req.params.id);
 
-  if (!tool)
-    return res.status(404).send('Tool with the given id was not found.');
-  res.send(tool);
-});
+    if (!tool)
+      return res.status(404).send('Tool with the given id was not found.');
+    res.send(tool);
+  }
+);
 
 module.exports = router;

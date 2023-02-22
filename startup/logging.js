@@ -15,7 +15,7 @@ module.exports = function () {
   //error logger
   winston.add(new winston.transports.File({ filename: 'logfile.log' }));
 
-  // mongoDB logger
+  // // mongoDB logger
   const db = config.get('db');
   winston.add(
     new winston.transports.MongoDB({

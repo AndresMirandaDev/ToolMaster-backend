@@ -4,6 +4,7 @@ const router = express.Router();
 const { Project, validate } = require('../models/project');
 const authorize = require('../middleware/authorize');
 const admin = require('../middleware/admin');
+const validateObjectId = require('../middleware/validateObjectId');
 
 router.get('/', authorize, async (req, res) => {
   const projects = await Project.find()
@@ -13,7 +14,7 @@ router.get('/', authorize, async (req, res) => {
   res.send(projects);
 });
 
-router.get('/:id', authorize, async (req, res) => {
+router.get('/:id', [authorize, validateObjectId], async (req, res) => {
   const project = await Project.findById(req.params.id).populate(
     'supervisor',
     'name _id'
@@ -46,7 +47,7 @@ router.post('/', [authorize, admin], async (req, res) => {
   res.send(project);
 });
 
-router.put('/:id', [authorize, admin], async (req, res) => {
+router.put('/:id', [authorize, admin, validateObjectId], async (req, res) => {
   const result = validate(req.body);
 
   if (result.error)
@@ -74,13 +75,17 @@ router.put('/:id', [authorize, admin], async (req, res) => {
   res.send(project);
 });
 
-router.delete('/:id', [authorize, admin], async (req, res) => {
-  const project = await Project.findByIdAndRemove(req.params.id);
+router.delete(
+  '/:id',
+  [authorize, admin, validateObjectId],
+  async (req, res) => {
+    const project = await Project.findByIdAndRemove(req.params.id);
 
-  if (!project)
-    return res.status(404).send('Project with the given id was not found.');
+    if (!project)
+      return res.status(404).send('Project with the given id was not found.');
 
-  res.send(project);
-});
+    res.send(project);
+  }
+);
 
 module.exports = router;
