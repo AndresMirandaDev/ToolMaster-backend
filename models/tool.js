@@ -14,42 +14,12 @@ const toolSchema = new mongoose.Schema({
     required: true,
   },
   toolGroup: {
-    type: new mongoose.Schema({
-      name: {
-        type: String,
-        minlength: 5,
-        maxlength: 100,
-        required: true,
-      },
-      description: {
-        type: String,
-        minlength: 5,
-        maxlength: 150,
-        required: true,
-      },
-    }),
-    default: undefined,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ToolGroup',
   },
   project: {
-    type: new mongoose.Schema({
-      name: {
-        type: String,
-        minlength: 5,
-        maxlength: 50,
-        required: true,
-      },
-      address: {
-        type: String,
-        minlength: 5,
-        maxlength: 50,
-        required: true,
-      },
-      projectNumber: {
-        type: Number,
-        required: true,
-      },
-    }),
-    default: 'Storage',
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Project',
   },
   available: {
     type: Boolean,
@@ -66,7 +36,7 @@ function validateTool(tool) {
     name: Joi.string().min(5).max(50).required(),
     serieNumber: Joi.number().required(),
     toolGroup: Joi.objectId(),
-    place: Joi.objectId(),
+    project: Joi.objectId(),
     available: Joi.boolean(),
   };
   return Joi.validate(tool, schema);

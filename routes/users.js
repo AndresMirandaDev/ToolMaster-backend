@@ -35,12 +35,12 @@ router.post('/', [authorize, admin], async (req, res) => {
     .send(_.pick(user, ['name', 'email', '_id', 'phone']));
 });
 
-router.put('/:id', [authorize], async (req, res) => {
+router.put('/:id', [authorize, admin], async (req, res) => {
   const result = validate(req.body);
   if (result.error)
     return res.status(400).send(result.error.details[0].message);
 
-  let { name, email, password, phone } = req.body;
+  let { name, email, password, phone, isAdmin } = req.body;
 
   let user = await User.findById(req.params.id);
   if (!user)
@@ -53,6 +53,7 @@ router.put('/:id', [authorize], async (req, res) => {
   (user.password = password),
     (user.email = email),
     (user.phone = phone),
+    (user.isAdmin = isAdmin),
     await user.save();
 
   res.send(user);

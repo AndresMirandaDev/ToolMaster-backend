@@ -27,4 +27,4 @@ function validateToolGroup(toolGroup) {
 }
 
 module.exports.ToolGroup = ToolGroup;
-module.exports.valildate = validateToolGroup;
+module.exports.validate = validateToolGroup;

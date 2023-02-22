@@ -6,12 +6,17 @@ const admin = require('../middleware/admin');
 const { Tool, validate } = require('../models/tool');
 
 router.get('/', async (req, res) => {
-  const tools = await Tool.find();
+  const tools = await Tool.find()
+    .sort('name')
+    .populate('project', 'name address projectNumber _id')
+    .populate('toolGroup', 'name description _id');
   res.send(tools);
 });
 
 router.get('/:id', async (req, res) => {
-  const tool = await Tool.findById(req.params.id);
+  const tool = await Tool.findById(req.params.id)
+    .populate('project', 'name address projectNumber _id')
+    .populate('toolgroup', 'name description');
 
   if (!tool)
     return res.status(404).send('Tool with the given id was not found.');
@@ -25,7 +30,7 @@ router.post('/', authorize, async (req, res) => {
     return res.status(400).send(result.error.details[0].message);
 
   const { name, serieNumber, toolGroup, project } = req.body;
-  let tool = new Tool({
+  let tool = await new Tool({
     name,
     serieNumber,
     toolGroup,
@@ -55,8 +60,8 @@ router.put('/:id', authorize, async (req, res) => {
     },
     { new: true }
   )
-    .populate('toolGroup')
-    .populate('project');
+    .populate('toolGroup', 'name description')
+    .populate('project', 'name address projectNumber');
 
   res.send(tool);
 });

@@ -27,7 +27,10 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  isAdmin: Boolean,
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 //user object is responsible for its authentication
@@ -47,6 +50,7 @@ function validateUser(user) {
     email: Joi.string().min(5).max(255).required().email(),
     password: Joi.string().min(5).max(1024).required(),
     phone: Joi.number().required(),
+    isAdmin: Joi.boolean(),
   };
 
   return Joi.validate(user, schema);
