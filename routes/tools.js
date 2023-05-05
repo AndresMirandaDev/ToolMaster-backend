@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', [authorize, validateObjectId], async (req, res) => {
   const tool = await Tool.findById(req.params.id)
     .populate('project', 'name address projectNumber _id')
-    .populate('toolgroup', 'name description');
+    .populate('toolGroup', 'name description');
 
   if (!tool)
     return res.status(404).send('Tool with the given id was not found.');
@@ -49,7 +49,7 @@ router.put('/:id', [authorize, validateObjectId], async (req, res) => {
   if (result.error)
     return res.status(400).send(result.error.details[0].message);
 
-  const { name, serieNumber, toolGroup, project } = req.body;
+  const { name, serieNumber, toolGroup, project, available } = req.body;
 
   const tool = await Tool.findByIdAndUpdate(
     req.params.id,
@@ -58,6 +58,7 @@ router.put('/:id', [authorize, validateObjectId], async (req, res) => {
       serieNumber,
       toolGroup,
       project,
+      available,
     },
     { new: true }
   )
