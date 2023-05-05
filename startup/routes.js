@@ -20,7 +20,7 @@ module.exports = function (app) {
   app.use('/api/toolgroups', toolGroups);
   app.use('/api/salaryreports', salaryReports);
 
-  app.use(morgan('dev'));
+  app.use(morgan('combined'));
 
   app.use(error);
 };

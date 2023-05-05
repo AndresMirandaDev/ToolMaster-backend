@@ -4,8 +4,14 @@ const bcrypt = require('bcrypt');
 const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
-const { User, validate } = require('../models/user');
+const { User, validate, validateUpdate } = require('../models/user');
 const admin = require('../middleware/admin');
+
+router.get('/', async (req, res) => {
+  const users = await User.find().select('-password');
+
+  res.send(users);
+});
 
 router.get('/me', authorize, async (req, res) => {
   const user = await User.findById(req.user._id).select('-password');
@@ -36,7 +42,7 @@ router.post('/', [authorize, admin], async (req, res) => {
 });
 
 router.put('/:id', [authorize, admin], async (req, res) => {
-  const result = validate(req.body);
+  const result = validateUpdate(req.body);
   if (result.error)
     return res.status(400).send(result.error.details[0].message);
 
@@ -45,13 +51,15 @@ router.put('/:id', [authorize, admin], async (req, res) => {
   let user = await User.findById(req.params.id);
   if (!user)
     return res.status(404).send('User with the given id was not found.');
-
-  const salt = await bcrypt.genSalt(10);
-  password = await bcrypt.hash(password, salt);
-
+  if (password) {
+    const salt = await bcrypt.genSalt(10);
+    password = await bcrypt.hash(password, salt);
+  }
+  if (password) {
+    user.password = password;
+  }
   user.name = name;
-  (user.password = password),
-    (user.email = email),
+  (user.email = email),
     (user.phone = phone),
     (user.isAdmin = isAdmin),
     await user.save();
