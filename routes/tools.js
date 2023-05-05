@@ -72,7 +72,6 @@ router.delete(
   '/:id',
   [authorize, admin, validateObjectId],
   async (req, res) => {
-    console.log(req.params.id);
     const tool = await Tool.findByIdAndRemove(req.params.id);
 
     if (!tool)
