@@ -22,8 +22,9 @@ const RentedToolSchema = new mongoose.Schema({
     required: true,
     default: Date.now(),
   },
-  rentEnd: {
-    type: Date,
+  project: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Project',
   },
 });
 
@@ -35,6 +36,7 @@ function validateRentedTool(tool) {
     rentedTo: Joi.string().min(5).max(50).required(),
     rentStart: Joi.date().required(),
     rentEnd: Joi.date(),
+    project: Joi.objectId().required(),
   };
   return Joi.validate(tool, schema);
 }

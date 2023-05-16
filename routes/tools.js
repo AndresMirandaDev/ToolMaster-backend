@@ -32,7 +32,7 @@ router.post('/', authorize, async (req, res) => {
 
   const { name, serieNumber, toolGroup, project } = req.body;
   let tool = await new Tool({
-    name,
+    name: name,
     serieNumber,
     toolGroup,
     project,

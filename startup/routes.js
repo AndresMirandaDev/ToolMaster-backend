@@ -9,6 +9,8 @@ const projects = require('../routes/projects');
 const toolGroups = require('../routes/toolGroups');
 const salaryReports = require('../routes/salaryReports');
 const error = require('../middleware/error');
+const rentedTools = require('../routes/rentedTools');
+const returns = require('../routes/returns');
 
 module.exports = function (app) {
   app.use(express.json());
@@ -19,6 +21,8 @@ module.exports = function (app) {
   app.use('/api/projects', projects);
   app.use('/api/toolgroups', toolGroups);
   app.use('/api/salaryreports', salaryReports);
+  app.use('/api/rentedtools', rentedTools);
+  app.use('/api/returns', returns);
 
   app.use(morgan('combined'));
 
