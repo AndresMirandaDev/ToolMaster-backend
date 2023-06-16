@@ -7,7 +7,13 @@ const validateObjectId = require('../middleware/validateObjectId');
 const { RentedTool } = require('../models/rentedTool');
 
 router.get('/', async (req, res) => {
-  const returns = await Return.find().sort('returnDate').populate('tool');
+  const returns = await Return.find()
+    .sort('-returnDate')
+    .populate({
+      path: 'tool',
+      populate: { path: 'project' },
+    });
+
   res.send(returns);
 });
 
@@ -19,11 +25,18 @@ router.post('/', async (req, res) => {
 
   const rentedTool = await RentedTool.findById(req.body.tool);
 
+  const returnedTool = {
+    name: rentedTool.name,
+    project: rentedTool.project,
+    rentStart: rentedTool.rentStart,
+    rentedTo: rentedTool.rentedTo,
+  };
+
   if (!rentedTool)
     return res.status(404).send('Tool with the given id was not found');
 
   let newReturn = new Return({
-    tool: rentedTool,
+    tool: returnedTool,
     rentStartDate: rentedTool.rentStart,
     returnDate: Date.now(),
     rentCompany: rentedTool.rentedTo,
