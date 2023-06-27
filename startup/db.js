@@ -3,7 +3,7 @@ const winston = require('winston');
 const config = require('config');
 
 module.exports = function () {
-  const db = config.get('db');
+  const db = process.env.MONGO_URI;
 
   mongoose
     .connect(db, {

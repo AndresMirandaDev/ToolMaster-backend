@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const winston = require('winston');
 const Joi = require('joi');
@@ -12,8 +13,8 @@ require('./startup/validation')();
 
 const port = process.env.PORT || 3000;
 
-const server = app.listen(port, () => {
+app.listen(port, () => {
   winston.info(`Listening on port ${port}...`);
 });
 
-module.exports = server;
+module.exports = app;
