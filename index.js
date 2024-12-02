@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const winston = require('winston');
 const Joi = require('joi');
+const morgan = require('morgan');
 
 const app = express();
 

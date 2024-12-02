@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', [authorize, validateObjectId], async (req, res) => {
   const tool = await Tool.findById(req.params.id)
-    .populate('project', 'name address projectNumber _id')
+    .populate('project', 'name address projectNumber _id ')
     .populate('toolGroup', 'name description');
 
   if (!tool)
@@ -59,6 +59,7 @@ router.put('/:id', [authorize, validateObjectId], async (req, res) => {
       toolGroup,
       project,
       available,
+      reparation,
     },
     { new: true }
   )

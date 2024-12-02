@@ -25,6 +25,10 @@ const toolSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  reparation: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const Tool = mongoose.model('Tool', toolSchema);
@@ -36,8 +40,9 @@ function validateTool(tool) {
     name: Joi.string().min(5).max(50).required(),
     serieNumber: Joi.number().required(),
     toolGroup: Joi.objectId(),
-    project: Joi.objectId(),
+    project: Joi.objectId().allow(null),
     available: Joi.boolean(),
+    reparation: Joi.boolean(),
   };
   return Joi.validate(tool, schema);
 }

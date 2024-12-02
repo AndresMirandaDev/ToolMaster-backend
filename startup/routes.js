@@ -1,5 +1,4 @@
 const express = require('express');
-const morgan = require('morgan');
 
 const home = require('../routes/home');
 const tools = require('../routes/tools');
@@ -23,8 +22,6 @@ module.exports = function (app) {
   app.use('/api/salaryreports', salaryReports);
   app.use('/api/rentedtools', rentedTools);
   app.use('/api/returns', returns);
-
-  app.use(morgan('combined'));
 
   app.use(error);
 };
